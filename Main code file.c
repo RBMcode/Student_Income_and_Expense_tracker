@@ -70,7 +70,7 @@ void view_summary()
     }
     printf("************************************\n");
     printf("Transactions\n");
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < transaction_count; i++)
     {
         if (transaction[i] > 0)
         {
@@ -87,8 +87,8 @@ void view_summary()
     printf("************************************\n");
     printf("Summary\n");
     printf("Total Income  : %.2f\n", total_income);
-    printf("Total Expense : %.2f\n", total_expense * -1);
-    printf("Balance       : %.2f\n", total_income + total_expense);
+    printf("Total Expense : %.2f\n", total_expense * (-1));
+    printf("Balance       : %.2f\n", total_income - total_expense);
 }
 
 
@@ -134,11 +134,9 @@ int main()
         {
         case 1:
             income_function();
-            transaction_count++;
             break;
         case 2:
             expense_function();
-            transaction_count++;
             break;
         case 3:
             view_summary();
@@ -157,7 +155,7 @@ int main()
             printf("Invalid choice! Please enter a number from 1 to 4.\n");
             break;
         }
-        
+
         warning();
     }
     return 0;
