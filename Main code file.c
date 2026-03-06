@@ -9,8 +9,13 @@ char description[MAX_TRANSACTIONS][25];
 
 /*Function Declarations*/
 /*Anan*/
-float income_function()
+void income_function()
 {
+    if (transaction_count >= MAX_TRANSACTIONS)
+    {
+        printf("Transaction limit reached!\n");
+        return;
+    }
     float amount;
     printf("Enter income amount: ");
     scanf("%f", &amount);
@@ -22,15 +27,20 @@ float income_function()
 
 
 /*Anan plus Tanvir*/
-float expense_function()
+void expense_function()
 {
+    if (transaction_count >= MAX_TRANSACTIONS)
+    {
+        printf("Transaction limit reached!\n");
+        return;
+    }
     float amount;
     int choice;
     printf("Enter expense amount: ");
     scanf("%f", &amount);
     do
     {
-    printf("What type of expense is this? (1. Daily, 2. Weekly, 3. Monthly, 4. One time)\n");
+    printf("What type of expense is this? (1. Daily, 2. Weekly, 3. Monthly, 4. One time): ");
     scanf("%d", &choice);
     if(choice == 1)
     {
@@ -68,9 +78,9 @@ void view_summary()
         printf("Summary cannot be shown. No data found.\n");
         return;
     }
-    printf("************************************\n");
+    printf("\n************************************\n");
     printf("Transactions\n");
-    for (int i = 0; i < transaction_count; i++)
+    for (i = 0; i < transaction_count; i++)
     {
         if (transaction[i] > 0)
         {
@@ -84,10 +94,10 @@ void view_summary()
         }
     }
 
-    printf("************************************\n");
+    printf("\n************************************\n");
     printf("Summary\n");
     printf("Total Income  : %.2f\n", total_income);
-    printf("Total Expense : %.2f\n", total_expense * (-1));
+    printf("Total Expense : %.2f\n", total_expense);
     printf("Balance       : %.2f\n", total_income - total_expense);
 }
 
@@ -98,6 +108,10 @@ void warning()
     int i;
     float total_income = 0;
     float total_expense = 0;
+    if (transaction_count == 0)
+    {
+        return;
+    }
 
     for (i = 0; i < transaction_count; i++)
     {
@@ -114,6 +128,43 @@ void warning()
     }
 }
 
+void delete_transaction()
+{
+    int item_index, i;
+    view_summary();
+    while(1 == 1)
+    {   
+        printf("Enter the transaction number you want to delete (1 to %d): ", transaction_count);
+        scanf("%d", &item_index);
+        item_index--;
+        if (item_index < 0 || item_index >= transaction_count)
+        {
+            printf("Invalid transaction number! Please enter a number from 1 to %d.\n", transaction_count);
+            
+        }
+        else
+        {
+            break;
+        }
+    }
+    printf("Are you sure you want to delete this transaction? (y/n): ");
+    char confirm;
+    scanf(" %c", &confirm);
+    if(confirm == 'y' || confirm == 'Y')
+    {
+        for(i = item_index; i < transaction_count - 1; i++)
+        {
+            transaction[i] = transaction[i + 1];
+            strcpy(description[i], description[i + 1]);
+        }
+        transaction_count--;
+        printf("Transaction deleted successfully!\n");
+    }
+    else
+    {
+        printf("Transaction deletion cancelled.\n");
+    }    
+}
 
 /*Ratul*/
 int main()
@@ -121,12 +172,13 @@ int main()
     int choice, run = 1;
     while(run == 1)
     {
-        printf("************************************\n");
+        printf("\n************************************\n");
         printf("Main Menu\n");
         printf("1. Add Income\n");
         printf("2. Add Expense\n");
-        printf("3. View Summary\n");
-        printf("4. Exit\n");
+        printf("3. Remove Transaction\n");
+        printf("4. View Summary\n");
+        printf("5. Exit\n");
         printf("************************************\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
@@ -139,23 +191,24 @@ int main()
             expense_function();
             break;
         case 3:
-            view_summary();
+            delete_transaction();
             break;
         case 4:
+            view_summary();
+            break;
+        case 5:
             printf("This will clear all transactions and exit the program. Are you sure? (y/n): ");
             char confirm;
             scanf(" %c", &confirm);
             if(confirm == 'y' || confirm == 'Y')
             {
-                printf("Exiting the program. Goodbye!\n");
                 run = 0;
             }
             break;
         default:
-            printf("Invalid choice! Please enter a number from 1 to 4.\n");
+            printf("Invalid choice! Please enter a number from 1 to 5.\n");
             break;
         }
-
         warning();
     }
     return 0;
